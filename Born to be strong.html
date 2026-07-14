@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Born to be strong</title>
+    <style>
+        body { background-color: #111827; color: #f3f4f6; font-family: sans-serif; margin: 0; padding: 0; }
+        .container { max-width: 440px; margin: 0 auto; padding: 24px; box-sizing: border-box; }
+        
+        /* 스트렝스 캐릭터 헤더 영역 */
+        header { text-align: center; margin-bottom: 24px; background: linear-gradient(135deg, #1f2937 0%, #111827 100%); padding: 20px 12px; border-radius: 16px; border: 1px solid #374151; }
+        .header-main { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 4px; }
+        h1 { color: #34d399; margin: 0; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; white-space: nowrap; }
+        header p { color: #9ca3af; font-size: 13px; margin: 4px 0 0 0; letter-spacing: -0.2px; }
+        
+        /* CSS 캐릭터 아키텍처 및 모션 그래픽 */
+        .char-box { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .barbell { position: absolute; background-color: #9ca3af; border-radius: 2px; }
+        .plate { position: absolute; background-color: #374151; border: 2px solid #4b5563; border-radius: 3px; width: 6px; height: 16px; }
+        .lifter-head { position: absolute; width: 10px; height: 10px; background-color: #34d399; border-radius: 50%; }
+        .lifter-body { position: absolute; background-color: #34d399; border-radius: 2px; }
+        
+        /* 1. 왼쪽: 스쿼트 캐릭터 */
+        .squat-char .barbell { width: 38px; height: 4px; top: 14px; animation: squat-mov 2.5s infinite ease-in-out; }
+        .squat-char .p-left { left: 0; top: 8px; animation: squat-mov 2.5s infinite ease-in-out; }
+        .squat-char .p-right { right: 0; top: 8px; animation: squat-mov 2.5s infinite ease-in-out; }
+        .squat-char .lifter-head { top: 16px; animation: squat-mov 2.5s infinite ease-in-out; }
+        .squat-char .lifter-body { width: 4px; height: 14px; top: 26px; left: 20px; transform-origin: top center; animation: squat-body-mov 2.5s infinite ease-in-out; }
+        
+        @keyframes squat-mov {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+        @keyframes squat-body-mov {
+            0%, 100% { transform: translateY(0) scaleY(1); }
+            50% { transform: translateY(4px) scaleY(0.6); }
+        }
+
+        /* 2. 오른쪽: OHP 캐릭터 */
+        .ohp-char .barbell { width: 38px; height: 4px; bottom: 18px; animation: ohp-mov 2s infinite ease-in-out; }
+        .ohp-char .p-left { left: 0; bottom: 12px; animation: ohp-mov 2s infinite ease-in-out; }
+        .ohp-char .p-right { right: 0; bottom: 12px; animation: ohp-mov 2s infinite ease-in-out; }
+        .ohp-char .lifter-head { bottom: 8px; left: 17px; }
+        .ohp-char .lifter-body { width: 6px; height: 10px; bottom: 0; left: 19px; }
+        
+        @keyframes ohp-mov {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-16px); }
+        }
+
+        section { background-color: #1f2937; padding: 20px; border-radius: 16px; border: 1px solid #374151; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); margin-bottom: 24px; }
+        h2 { font-size: 18px; color: #6ee7b7; margin-top: 0; margin-bottom: 16px; }
+        
+        .day-flex { display: flex; justify-content: space-between; gap: 4px; overflow-x: auto; padding-bottom: 4px; }
+        .day-btn { flex: 1; min-width: 44px; text-align: center; padding: 12px 0; border-radius: 12px; font-size: 14px; font-weight: bold; border: none; cursor: pointer !important; -webkit-tap-highlight-color: transparent; }
+        .btn-inactive { background-color: #374151; color: #d1d5db; }
+        .btn-active { background-color: #10b981; color: #111827; }
+        
+        .grid-3 { display: grid; grid-template-columns: 1.2fr 1.2fr 1.4fr; gap: 8px; margin-bottom: 16px; }
+        label { display: block; font-size: 12px; color: #9ca3af; margin-bottom: 4px; }
+        input, select, textarea { width: 100%; background-color: #374151; border: none; border-radius: 8px; padding: 10px; color: white; box-sizing: border-box; font-size: 14px; -webkit-appearance: none; font-family: sans-serif; }
+        input:focus, select:focus, textarea:focus { outline: 2px solid #10b981; }
+        
+        .plan-input-box { display: flex; gap: 6px; margin-bottom: 16px; align-items: center; }
+        
+        .primary-btn { width: 100%; background-color: #10b981; color: #111827; font-weight: bold; padding: 12px; border: none; border-radius: 8px; cursor: pointer !important; font-size: 15px; -webkit-tap-highlight-color: transparent; }
+        .primary-btn:hover { background-color: #059669; }
+        
+        .add-btn { background-color: #10b981; color: #111827; font-weight: bold; height: 38px; padding: 0 12px; border: none; border-radius: 8px; cursor: pointer !important; }
+        
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { display: flex; flex-direction: column; background-color: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; margin-bottom: 8px; font-size: 14px; }
+        
+        .routine-main { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .todo-item { display: flex; justify-content: space-between; align-items: center; flex: 1; padding: 6px 12px 6px 0; cursor: pointer !important; -webkit-tap-highlight-color: transparent; }
+        .completed { text-decoration: line-through; color: #6b7280; }
+        
+        .routine-control { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #374151; width: 100%; }
+        .week-indicator { font-size: 11px; color: #a8a29e; font-weight: bold; }
+        
+        /* 🔥 메모 박스 인프라 */
+        .memo-box-wrapper { margin-top: 8px; border-top: 1px solid #2d3748; padding-top: 8px; width: 100%; }
+        .memo-input { background-color: #1f2937; border: 1px solid #4b5563; font-size: 12px; border-radius: 6px; padding: 6px 8px; color: #e5e7eb; width: 100%; box-sizing: border-box; resize: none; }
+        
+        .cycle-btn { background-color: #2563eb; color: white; font-size: 11px; font-weight: bold; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer !important; -webkit-tap-highlight-color: transparent; }
+        .cycle-btn:hover { background-color: #1d4ed8; }
+        
+        .custom-result-display { margin-bottom: 14px; padding: 12px; background-color: #111827; border-radius: 8px; border-left: 4px solid #10b981; }
+        .rm-table-wrapper { background-color: #111827; border: 1px solid #374151; border-radius: 8px; margin-top: 12px; overflow: hidden; }
+        .rm-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: center; }
+        .rm-table th { background-color: #1f2937; color: #9ca3af; padding: 6px; font-weight: normal; font-size: 11px; border-bottom: 1px solid #374151; }
+        .rm-table td { padding: 8px 6px; border-bottom: 1px solid #1f2937; color: #e5e7eb; font-family: monospace; }
+        .rm-table tr:last-child td { border-bottom: none; }
+        .highlight-rm { color: #34d399 !important; font-weight: bold; background-color: rgba(16, 185, 129, 0.1); }
+        
+        .badge-group { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .badge { font-size: 10px; background-color: #064e3b; color: #34d399; padding: 2px 6px; border-radius: 4px; border: 1px solid #047857; font-family: monospace; white-space: nowrap; }
+        .badge-reps { background-color: #1e3a8a; color: #93c5fd; border: 1px solid #1d4ed8; }
+        .badge-step { background-color: #78350f; color: #fde68a; border: 1px solid #b45309; }
+        .badge-1rm { background-color: #4c1d95; color: #ddd6fe; border: 1px solid #6d28d9; font-weight: bold; }
+        
+        .del-btn { background: none; border: none; color: #6b7280; font-weight: bold; cursor: pointer !important; padding: 8px; font-size: 14px; }
+        .del-btn:hover { color: #f87171; }
+        .clear-btn { font-size: 12px; color: #f87171; background: none; border: none; cursor: pointer !important; text-decoration: underline; padding: 4px; }
+        
+        .scroll-container { max-height: 260px; overflow-y: auto; padding-right: 2px; }
+        .scroll-container::-webkit-scrollbar { width: 4px; }
+        .scroll-container::-webkit-scrollbar-thumb { background-color: #4b5563; border-radius: 4px; }
+
+        .chart-wrapper { width: 100%; background-color: #111827; border-radius: 8px; padding: 12px; box-sizing: border-box; margin-top: 12px; }
+        .chart-svg { width: 100%; height: 160px; overflow: visible; }
+        .chart-axis { stroke: #4b5563; stroke-width: 1; }
+        .chart-line { stroke: #10b981; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .chart-point { fill: #34d399; stroke: #111827; stroke-width: 2; cursor: pointer; }
+        .chart-text { fill: #9ca3af; font-size: 10px; font-family: monospace; text-anchor: middle; }
+        .chart-val-text { fill: #6ee7b7; font-size: 10px; font-weight: bold; text-anchor: middle; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- 헤더 섹션 -->
+        <header>
+            <div class="header-main">
+                <div class="char-box squat-char">
+                    <div class="plate p-left"></div>
+                    <div class="barbell"></div>
+                    <div class="plate p-right"></div>
+                    <div class="lifter-head"></div>
+                    <div class="lifter-body"></div>
+                </div>
+                <h1>Born to be strong</h1>
+                <div class="char-box ohp-char">
+                    <div class="plate p-left"></div>
+                    <div class="barbell"></div>
+                    <div class="plate p-right"></div>
+                    <div class="lifter-head"></div>
+                    <div class="lifter-body"></div>
+                </div>
+            </div>
+            <p>스트렝스 측정 및 요일별 볼륨 루틴 관리</p>
+        </header>
+
+        <!-- 요일 선택 탭 섹션 -->
+        <section>
+            <div class="day-flex">
+                <button type="button" onclick="changeDay('월')" id="btn-월" class="day-btn btn-active">월</button>
+                <button type="button" onclick="changeDay('화')" id="btn-화" class="day-btn btn-inactive">화</button>
+                <button type="button" onclick="changeDay('수')" id="btn-수" class="day-btn btn-inactive">수</button>
+                <button type="button" onclick="changeDay('목')" id="btn-목" class="day-btn btn-inactive">목</button>
+                <button type="button" onclick="changeDay('금')" id="btn-금" class="day-btn btn-inactive">금</button>
+                <button type="button" onclick="changeDay('토')" id="btn-토" class="day-btn btn-inactive">토</button>
+                <button type="button" onclick="changeDay('일')" id="btn-일" class="day-btn btn-inactive">일</button>
+            </div>
+            <p style="text-align: center; font-size: 12px; color: #34d399; margin-top: 8px; margin-bottom: 0;">
+                <span id="selected-day-title">월요일</span> 루틴 편집 중
+            </p>
+        </section>
+
+        <!-- 1️⃣ RM 계산기 섹션 -->
+        <section>
+            <h2>🏋️‍♂️ RM 계산기</h2>
+            <div class="grid-3">
+                <div>
+                    <label>중량 (kg)</label>
+                    <input type="number" id="weight" placeholder="예: 100" pattern="[0-9]*">
+                </div>
+                <div>
+                    <label>반복 횟수</label>
+                    <input type="number" id="reps" placeholder="예: 5" pattern="[0-9]*">
+                </div>
+                <div>
+                    <label>원하는 RM</label>
+                    <input type="number" id="targetRmInput" placeholder="예: 3" value="1" min="1" max="15" pattern="[0-9]*">
+                </div>
+            </div>
+            <button type="button" onclick="calculateRM()" class="primary-btn">계산하기</button>
+            
+            <div id="rmResultBox" class="hidden" style="margin-top: 16px;">
+                <div class="custom-result-display">
+                    <span style="font-size: 13px; color: #9ca3af;" id="lblCustomRm">원하는 RM 중량:</span>
+                    <span id="valCustomRm" style="font-size: 22px; font-weight: 900; color: #34d399; margin-left: 8px;">0</span>
+                    <span style="color: #34d399; font-weight: bold; font-size: 14px;">kg</span>
+                </div>
+
+                <div style="font-size: 12px; color: #9ca3af; margin-bottom: 6px;">참고용 주요 RM 테이블</div>
+                <div class="rm-table-wrapper">
+                    <table class="rm-table">
+                        <thead>
+                            <tr>
+                                <th>1RM</th>
+                                <th>3RM</th>
+                                <th>5RM</th>
+                                <th>8RM</th>
+                                <th>10RM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="td-rm1">0kg</td>
+                                <td id="td-rm3">0kg</td>
+                                <td id="td-rm5">0kg</td>
+                                <td id="td-rm8">0kg</td>
+                                <td id="td-rm10">0kg</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; gap: 8px; border-top: 1px solid #374151; padding-top: 12px; margin-top: 12px;">
+                    <input type="text" id="logWorkoutName" placeholder="종목 입력 (예: 데드리프트)">
+                    <button type="button" onclick="addRMRecord()" class="add-btn" style="font-size: 12px; white-space: nowrap; height: 36px;">기록</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2️⃣ 오늘의 운동 계획 섹션 -->
+        <section>
+            <h2>📝 <span id="todo-day-label">월요일</span> 운동 계획 및 피드백</h2>
+            <div class="plan-input-box">
+                <input type="text" id="todoInput" placeholder="종목명" style="flex: 1.8;">
+                <input type="number" id="startWeightInput" placeholder="시작" style="flex: 1.1;" pattern="[0-9]*">
+                <input type="number" id="targetRepsInput" placeholder="목표" style="flex: 1.1;" pattern="[0-9]*">
+                <input type="number" id="weightStepInput" placeholder="증량" style="flex: 1.1;" pattern="[0-9]*">
+                <button type="button" onclick="addTodo()" class="add-btn">+</button>
+            </div>
+            <ul id="todoList"></ul>
+        </section>
+
+        <!-- 3️⃣ 요일별 수행 완료 기록 (히스토리) 및 요일 종합 총평 -->
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="margin: 0;">📊 <span id="log-day-label">월요일</span> 일지 완료 체크</h2>
+                <button type="button" onclick="clearCurrentDayLogs()" class="clear-btn">이 요일 비우기</button>
+            </div>
+            <div id="logContainer" class="scroll-container" style="margin-bottom: 16px;"></div>
+            
+            <!-- 🔥 추가된 요일별 총평 피드백 메모장 -->
+            <div style="border-top: 1px solid #374151; padding-top: 14px;">
+                <label style="color: #6ee7b7; font-weight: bold; margin-bottom: 6px; display: block; font-size: 13px;">📝 <span id="feedback-day-label">월요일</span> 훈련 총평 피드백</label>
+                <textarea id="dayFeedbackMemo" rows="3" class="memo-input" placeholder="오늘의 전반적인 컨디션, 영양 상태, 피로도 등을 기록하세요..." oninput="saveDayFeedback()"></textarea>
+            </div>
+        </section>
+
+        <!-- 4️⃣ 볼륨 성장 추이 그래프 섹션 -->
+        <section style="border: 1px solid #10b981;">
+            <h2>📈 볼륨 성장 곡선</h2>
+            <div style="margin-bottom: 12px;">
+                <label for="chartWorkoutSelect">추적할 종목 선택</label>
+                <select id="chartWorkoutSelect" onchange="updateVolumeChart()">
+                    <option value="">-- 일지에 등록된 종목 선택 --</option>
+                </select>
+            </div>
+            <div class="chart-wrapper">
+                <svg id="volumeChart" class="chart-svg">
+                    <!-- 스크립트 렌더링 -->
+                </svg>
+            </div>
+            <p style="font-size: 11px; color: #9ca3af; margin-top: 8px; margin-bottom: 0; text-align: center;">
+                💡 각 요일 일지에서 '완료 체크'를 누른 데이터(중량 × 횟수)를 기반으로 빌드됩니다.
+            </p>
+        </section>
+
+        <!-- 5️⃣ 스트렝스 기록 보관소 탭 -->
+        <section style="border: 1px solid #6d28d9; background-color: #1e1b4b;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="color: #c084fc; margin: 0;">🏆 스트렝스 기록실</h2>
+                <button type="button" onclick="clearAll1RMLogs()" class="clear-btn" style="color: #f472b6;">전체 삭제</button>
+            </div>
+            <div id="1rmLogContainer" class="scroll-container"></div>
+        </section>
+
+    </div>
+
+    <script>
+        let currentDay = '월';
+        let currentWeight = 0;
+        let currentReps = 0;
+        let calculated1RMGlobal = 0;
+
+        window.onload = function() {
+            displayCurrentDayData();
+            display1RMRecords();
+            populateChartSelector();
+        };
+
+        function changeDay(day) {
+            currentDay = day;
+            document.getElementById('selected-day-title').innerText = day + '요일';
+            document.getElementById('todo-day-label').innerText = day + '요일';
+            document.getElementById('log-day-label').innerText = day + '요일';
+            document.getElementById('feedback-day-label').innerText = day + '요일';
+
+            const buttons = document.querySelectorAll('.day-btn');
+            buttons.forEach(btn => btn.className = "day-btn btn-inactive");
+
+            const activeBtn = document.getElementById('btn-' + day);
+            if (activeBtn) activeBtn.className = "day-btn btn-active";
+
+            displayCurrentDayData();
+        }
+
+        function calculateRM() {
+            currentWeight = parseFloat(document.getElementById('weight').value);
+            currentReps = parseInt(document.getElementById('reps').value);
+            const targetRm = parseInt(document.getElementById('targetRmInput').value) || 1;
+            const resultBox = document.getElementById('rmResultBox');
+
+            if (!currentWeight || !currentReps) {
+                alert('중량과 횟수를 모두 입력해주세요!');
+                return;
+            }
+
+            if (targetRm < 1) {
+                alert('원하는 RM은 최소 1개 이상이어야 합니다.');
+                return;
+            }
+
+            calculated1RMGlobal = Math.round(currentWeight * (1 + currentReps / 30));
+
+            let customRmWeight = 0;
+            if (targetRm === 1) {
+                customRmWeight = calculated1RMGlobal;
+            } else {
+                customRmWeight = Math.round(calculated1RMGlobal / (1 + targetRm / 30));
+            }
+
+            document.getElementById('lblCustomRm').innerText = `예상 ${targetRm}RM 중량:`;
+            document.getElementById('valCustomRm').innerText = customRmWeight;
+
+            document.getElementById('td-rm1').innerText = calculated1RMGlobal + 'kg';
+            document.getElementById('td-rm3').innerText = Math.round(calculated1RMGlobal / (1 + 3 / 30)) + 'kg';
+            document.getElementById('td-rm5').innerText = Math.round(calculated1RMGlobal / (1 + 5 / 30)) + 'kg';
+            document.getElementById('td-rm8').innerText = Math.round(calculated1RMGlobal / (1 + 8 / 30)) + 'kg';
+            document.getElementById('td-rm10').innerText = Math.round(calculated1RMGlobal / (1 + 10 / 30)) + 'kg';
+
+            const tableTds = ['1', '3', '5', '8', '10'];
+            tableTds.forEach(num => {
+                const td = document.getElementById('td-rm' + num);
+                if (parseInt(num) === targetRm) {
+                    td.className = "highlight-rm";
+                } else {
+                    td.className = "";
+                }
+            });
+
+            resultBox.classList.remove('hidden');
+        }
+
+        function addRMRecord() {
+            const workoutNameInput = document.getElementById('logWorkoutName');
+            const workoutName = workoutNameInput.value.trim();
+
+            if (!workoutName) {
+                alert('운동 종목 이름을 입력해주세요!');
+                return;
+            }
+
+            const today = new Date();
+            const dateStr = (today.getMonth() + 1) + '/' + today.getDate();
+
+            const new1RMLog = {
+                id: Date.now(),
+                date: dateStr,
+                name: workoutName,
+                baseWeight: currentWeight,
+                baseReps: currentReps,
+                calculated1RM: calculated1RMGlobal
+            };
+
+            const existing1RMLogs = JSON.parse(localStorage.getItem('vW_Total_1RM_Records')) || [];
+            existing1RMLogs.unshift(new1RMLog);
+            localStorage.setItem('vW_Total_1RM_Records', JSON.stringify(existing1RMLogs));
+
+            workoutNameInput.value = '';
+            document.getElementById('rmResultBox').classList.add('hidden');
+            document.getElementById('weight').value = '';
+            document.getElementById('reps').value = '';
+            
+            display1RMRecords();
+        }
+
+        function display1RMRecords() {
+            const container = document.getElementById('1rmLogContainer');
+            container.innerHTML = '';
+            const logs = JSON.parse(localStorage.getItem('vW_Total_1RM_Records')) || [];
+
+            if (logs.length === 0) {
+                container.innerHTML = `<p style="text-align: center; font-size: 14px; color: #94a3b8; padding: 16px 0; margin: 0;">기록실 데이터가 비어 있습니다.</p>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                const div = document.createElement('div');
+                div.style.cssText = "background-color: #111827; padding: 12px; border-radius: 8px; border: 1px solid #4c1d95; display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 8px;";
+                div.innerHTML = `
+                    <div>
+                        <span style="font-size: 11px; color: #a78bfa; font-family: monospace; margin-right: 8px;">${log.date}</span>
+                        <strong style="color: #c084fc; margin-right: 8px;">${log.name}</strong>
+                        <span style="color: #94a3b8; font-size: 12px;">(${log.baseWeight}kg x ${log.baseReps}R)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="badge badge-1rm">1RM: ${log.calculated1RM}kg</span>
+                        <button type="button" onclick="delete1RMRecord(${log.id})" class="del-btn">✕</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function delete1RMRecord(id) {
+            let logs = JSON.parse(localStorage.getItem('vW_Total_1RM_Records')) || [];
+            logs = logs.filter(log => log.id !== id);
+            localStorage.setItem('vW_Total_1RM_Records', JSON.stringify(logs));
+            display1RMRecords();
+        }
+
+        function clearAll1RMLogs() {
+            if (confirm('모든 기록실 데이터를 포맷하시겠습니까?')) {
+                localStorage.removeItem('vW_Total_1RM_Records');
+                display1RMRecords();
+            }
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const weightInput = document.getElementById('startWeightInput');
+            const repsInput = document.getElementById('targetRepsInput');
+            const stepInput = document.getElementById('weightStepInput');
+            
+            const todoText = input.value.trim();
+            const startWeight = parseFloat(weightInput.value.trim()) || 0;
+            const targetReps = parseInt(repsInput.value.trim()) || 0;
+            const weightStep = parseFloat(stepInput.value.trim()) || 0;
+
+            if (!todoText) {
+                alert('운동 종목을 입력해주세요!');
+                return;
+            }
+
+            const existingTodos = JSON.parse(localStorage.getItem('vW_Todos_v4_' + currentDay)) || [];
+            const newTodo = { 
+                id: Date.now(), 
+                text: todoText, 
+                weight: startWeight,
+                reps: targetReps,
+                baseReps: targetReps,
+                step: weightStep,
+                currentWeek: 1,
+                completed: false,
+                memo: "" /* 개별 운동 피드백 메모 속성 초기화 */
+            };
+            
+            existingTodos.push(newTodo);
+            localStorage.setItem('vW_Todos_v4_' + currentDay, JSON.stringify(existingTodos));
+
+            input.value = '';
+            weightInput.value = '';
+            repsInput.value = '';
+            stepInput.value = '';
+            displayTodos();
+        }
+
+        function processNextWeekCycle(id) {
+            let todos = JSON.parse(localStorage.getItem('vW_Todos_v4_' + currentDay)) || [];
+            const todo = todos.find(t => t.id === id);
+            
+            if (!todo) return;
+
+            if (todo.currentWeek === 1) {
+                todo.reps = parseInt(todo.reps) + 1;
+                todo.currentWeek = 2;
+            } else {
+                todo.weight = parseFloat(todo.weight) + parseFloat(todo.step);
+                todo.reps = todo.baseReps; 
+                todo.currentWeek = 1;
+            }
+
+            localStorage.setItem('vW_Todos_v4_' + currentDay, JSON.stringify(todos));
+            displayTodos();
+        }
+
+        /* 🔥 개별 운동 피드백 실시간 저장 */
+        function saveTodoMemo(id, val) {
+            let todos = JSON.parse(localStorage.getItem('vW_Todos_v4_' + currentDay)) || [];
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                todo.memo = val;
+                localStorage.setItem('vW_Todos_v4_' + currentDay, JSON.stringify(todos));
+            }
+        }
+
+        /* 🔥 요일 종합 총평 메모 실시간 저장 */
+        function saveDayFeedback() {
+            const val = document.getElementById('dayFeedbackMemo').value;
+            localStorage.setItem('vW_Feedback_' + currentDay, val);
+        }
+
+        function displayTodos() {
+            const ul = document.getElementById('todoList');
+            ul.innerHTML = '';
+            const todos = JSON.parse(localStorage.getItem('vW_Todos_v4_' + currentDay)) || [];
+
+            todos.forEach(todo => {
+                const li = document.createElement('li');
+                const textClass = todo.completed ? 'todo-item completed' : 'todo-item';
+                const weekText = todo.currentWeek === 1 ? "1주차 (횟수 증가 대기)" : "2주차 (무게 증량 대기)";
+                const memoValue = todo.memo || "";
+                
+                li.innerHTML = `
+                    <div class="routine-main">
+                        <div onclick="toggleTodoComplete(${todo.id})" class="${textClass}">
+                            <span style="font-weight: 600;">${todo.text}</span>
+                            <div class="badge-group">
+                                <span class="badge">시작: ${todo.weight}kg</span>
+                                <span class="badge badge-reps">목표: ${todo.reps}회</span>
+                                <span class="badge badge-step">증량: +${todo.step}kg</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="deleteTodo(${todo.id})" class="del-btn">✕</button>
+                    </div>
+                    
+                    <!-- 개별 운동 피드백 작성 메모 필드 -->
+                    <div class="memo-box-wrapper">
+                        <input type="text" class="memo-input" placeholder="💡 이 종목 피드백 메모 (예: RPE 8, 세 번째 세트 골반 씹힘)" value="${memoValue}" oninput="saveTodoMemo(${todo.id}, this.value)">
+                    </div>
+
+                    <div class="routine-control">
+                        <span class="week-indicator">⏳ 현재 상태: ${weekText}</span>
+                        <button type="button" onclick="processNextWeekCycle(${todo.id})" class="cycle-btn">🔄 격주 자동 전환</button>
+                    </div>
+                `;
+                ul.appendChild(li);
+            });
+        }
+
+        function toggleTodoComplete(id) {
+            let todos = JSON.parse(localStorage.getItem('vW_Todos_v4_' + currentDay)) || [];
+            const clickedTodo = todos.find(todo => todo.id === id);
+            
+            if (clickedTodo) {
+                clickedTodo.completed = !clickedTodo.completed;
+                localStorage.setItem('vW_Todos_v4_' + currentDay, JSON.stringify(todos));
+                
+                if (clickedTodo.completed) {
+                    saveToDayLog(clickedTodo.text, clickedTodo.weight, clickedTodo.reps);
+                }
+            }
+            displayTodos();
+        }
+
+        function saveToDayLog(name, weight, reps) {
+            const today = new Date();
+            const dateStr = (today.getMonth() + 1) + '/' + today.getDate();
+            const newLog = { id: Date.now(), date: dateStr, name: name, weight: weight, reps: reps };
+            
+            const existingLogs = JSON.parse(localStorage.getItem('vW_Logs_v3_' + currentDay)) || [];
+            existingLogs.unshift(newLog);
+            localStorage.setItem('vW_Logs_v3_' + currentDay, JSON.stringify(existingLogs));
+            
+            displayLogs();
+            populateChartSelector();
+        }
+
+        function displayLogs() {
+            const container = document.getElementById('logContainer');
+            container.innerHTML = '';
+            const logs = JSON.parse(localStorage.getItem('vW_Logs_v3_' + currentDay)) || [];
+
+            if (logs.length === 0) {
+                container.innerHTML = `<p style="text-align: center; font-size: 14px; color: #6b7280; padding: 16px 0; margin: 0;">완료된 루틴 일지가 없습니다.</p>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                const div = document.createElement('div');
+                div.style.cssText = "background-color: #111827; padding: 12px; border-radius: 8px; border: 1px solid #374151; display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 8px;";
+                div.innerHTML = `
+                    <div>
+                        <span style="font-size: 11px; color: #6b7280; font-family: monospace; margin-right: 8px;">${log.date}</span>
+                        <strong style="color: #34d399; margin-right: 8px;">${log.name}</strong>
+                        <span style="color: #d1d5db;">${log.weight}kg × ${log.reps}회 완료</span>
+                    </div>
+                    <button type="button" onclick="deleteLog(${log.id})" class="del-btn">✕</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function populateChartSelector() {
+            const select = document.getElementById('chartWorkoutSelect');
+            const currentSelectedValue = select.value;
+            select.innerHTML = '<option value="">-- 일지에 등록된 종목 선택 --</option>';
+            const days = ['월', '화', '수', '목', '금', '토', '일'];
+            const allWorkoutNames = new Set();
+            
+            days.forEach(day => {
+                const logs = JSON.parse(localStorage.getItem('vW_Logs_v3_' + day)) || [];
+                logs.forEach(log => { if (log.name) allWorkoutNames.add(log.name); });
+            });
+            
+            if (allWorkoutNames.size === 0) return;
+            allWorkoutNames.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name; opt.innerText = name; select.appendChild(opt);
+            });
+            
+            if (currentSelectedValue && allWorkoutNames.has(currentSelectedValue)) {
+                select.value = currentSelectedValue; updateVolumeChart();
+            }
+        }
+
+        function updateVolumeChart() {
+            const select = document.getElementById('chartWorkoutSelect');
+            const targetName = select.value;
+            const svg = document.getElementById('volumeChart');
+            svg.innerHTML = '';
+
+            if (!targetName) {
+                svg.innerHTML = `<text x="50%" y="50%" fill="#6b7280" font-size="13" text-anchor="middle">종목을 선택하면 볼륨 성장 선형 차트가 출력됩니다.</text>`;
+                return;
+            }
+
+            const days = ['월', '화', '수', '목', '금', '토', '일'];
+            let trackData = [];
+
+            days.forEach(day => {
+                const logs = JSON.parse(localStorage.getItem('vW_Logs_v3_' + day)) || [];
+                logs.forEach(log => {
+                    if (log.name === targetName) {
+                        const volume = parseFloat(log.weight) * parseInt(log.reps);
+                        trackData.push({ id: log.id, date: log.date, volume: volume, detail: `${log.weight}kg × ${log.reps}회` });
+                    }
+                });
+            });
+
+            trackData.sort((a, b) => a.id - b.id);
+
+            if (trackData.length === 0) {
+                svg.innerHTML = `<text x="50%" y="50%" fill="#6b7280" font-size="12" text-anchor="middle">해당 종목의 볼륨 완료 데이터가 부족합니다.</text>`;
+                return;
+            }
+
+            const width = svg.clientWidth || 392;
+            const height = 160;
+            const padding = 35;
+            const chartWidth = width - (padding * 2);
+            const chartHeight = height - (padding * 2);
+
+            const volumes = trackData.map(d => d.volume);
+            let maxVol = Math.max(...volumes);
+            let minVol = Math.min(...volumes);
+            if (maxVol === minVol) { maxVol += 10; minVol = Math.max(0, minVol - 10); }
+            const volRange = maxVol - minVol;
+
+            const axisX = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            axisX.setAttribute("x1", padding); axisX.setAttribute("y1", height - padding);
+            axisX.setAttribute("x2", width - padding); axisX.setAttribute("y2", height - padding);
+            axisX.className.baseVal = "chart-axis"; svg.appendChild(axisX);
+
+            let pointsCoordinates = [];
+            const dataCount = trackData.length;
+
+            trackData.forEach((data, index) => {
+                const x = padding + (dataCount > 1 ? (index / (dataCount - 1)) * chartWidth : chartWidth / 2);
+                const y = padding + chartHeight - ((data.volume - minVol) / volRange) * chartHeight;
+                pointsCoordinates.push({ x, y, data });
+            });
+
+            if (pointsCoordinates.length > 1) {
+                let pathD = `M ${pointsCoordinates[0].x} ${pointsCoordinates[0].y}`;
+                for (let i = 1; i < pointsCoordinates.length; i++) { pathD += ` L ${pointsCoordinates[i].x} ${pointsCoordinates[i].y}`; }
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", pathD); path.className.baseVal = "chart-line"; svg.appendChild(path);
+            }
+
+            pointsCoordinates.forEach(pt => {
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", pt.x); circle.setAttribute("cy", pt.y); circle.setAttribute("r", 5);
+                circle.className.baseVal = "chart-point";
+                const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                title.textContent = `${pt.data.date} [총 볼륨: ${pt.data.volume}kg] (${pt.data.detail})`;
+                circle.appendChild(title); svg.appendChild(circle);
+
+                const txtDate = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txtDate.setAttribute("x", pt.x); txtDate.setAttribute("y", height - padding + 15);
+                txtDate.className.baseVal = "chart-text"; txtDate.textContent = pt.data.date; svg.appendChild(txtDate);
+
+                const txtVol = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                txtVol.setAttribute("x", pt.x); txtVol.setAttribute("y", pt.y - 10);
+                txtVol.className.baseVal = "chart-val-text"; txtVol.textContent = pt.data.volume; svg.appendChild(txtVol);
+            });
+        }
+
+        function deleteLog(id) {
+            let logs = JSON.parse(localStorage.getItem('vW_Logs_v3_' + currentDay)) || [];
+            logs = logs.filter(log => log.id !== id);
+            localStorage.setItem('vW_Logs_v3_' + currentDay, JSON.stringify(logs));
+            displayLogs();
+            populateChartSelector();
+        }
+
+        function deleteTodo(id) {
+            let todos = JSON.parse(localStorage.getItem('vW_Todos_v4_' + currentDay)) || [];
+            todos = todos.filter(todo => todo.id !== id);
+            localStorage.setItem('vW_Todos_v4_' + currentDay, JSON.stringify(todos));
+            displayTodos();
+        }
+
+        function clearCurrentDayLogs() {
+            if (confirm(`정말로 ${currentDay}요일의 체크 기록을 비우시겠습니까?`)) {
+                localStorage.removeItem('vW_Logs_v3_' + currentDay);
+                displayLogs();
+                populateChartSelector();
+            }
+        }
+
+        function displayCurrentDayData() { 
+            displayTodos(); 
+            displayLogs(); 
+            
+            /* 요일 총평 피드백 불러오기 */
+            const savedFeedback = localStorage.getItem('vW_Feedback_' + currentDay) || "";
+            document.getElementById('dayFeedbackMemo').value = savedFeedback;
+        }
+
+        document.getElementById('todoInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') addTodo(); });
+        document.getElementById('startWeightInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') addTodo(); });
+        document.getElementById('targetRepsInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') addTodo(); });
+        document.getElementById('weightStepInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') addTodo(); });
+    </script>
+</body>
+</html>
